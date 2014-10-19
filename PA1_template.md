@@ -25,6 +25,7 @@ The first step of this project is to import the data and do preprocessing. This 
 
 
 ```r
+unzip("activity.zip", exdir = ".")
 data <- read.csv("activity.csv", colClasses=c(date="Date"))
 head(data)
 ```

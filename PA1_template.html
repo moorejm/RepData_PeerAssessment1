@@ -203,7 +203,8 @@ hr {
 
 <p>The first step of this project is to import the data and do preprocessing. This is done by using the &ldquo;read.csv&rdquo; function to import the &ldquo;activity.csv&rdquo; file (which needs to be in the user&#39;s working directory) into R. The &ldquo;colClasses&rdquo; function is then used to convert the &ldquo;date&rdquo; column to a Date class. Next, the total steps taken per day are calculated by using the &ldquo;tapply&rdquo; function. The first six entries from &ldquo;activity.csv&rdquo; and the first six daily step totals are shown below as an example.</p>
 
-<pre><code class="r">data &lt;- read.csv(&quot;activity.csv&quot;, colClasses=c(date=&quot;Date&quot;))
+<pre><code class="r">unzip(&quot;activity.zip&quot;, exdir = &quot;.&quot;)
+data &lt;- read.csv(&quot;activity.csv&quot;, colClasses=c(date=&quot;Date&quot;))
 head(data)
 </code></pre>
 
