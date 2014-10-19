@@ -25,45 +25,28 @@ The first step of this project is to import the data and do preprocessing. This 
 
 
 ```r
-data <- read.csv("./activity.csv", colClasses=c(date="Date"))
-```
-
-```
-## Warning: cannot open file './activity.csv': No such file or directory
-```
-
-```
-## Error: cannot open the connection
-```
-
-```r
+data <- read.csv("activity.csv", colClasses=c(date="Date"))
 head(data)
 ```
 
 ```
-##                                                                      
-## 1 function (..., list = character(), package = NULL, lib.loc = NULL, 
-## 2     verbose = getOption("verbose"), envir = .GlobalEnv)            
-## 3 {                                                                  
-## 4     fileExt <- function(x) {                                       
-## 5         db <- grepl("\\\\.[^.]+\\\\.(gz|bz2|xz)$", x)              
-## 6         ans <- sub(".*\\\\.", "", x)
+##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25
 ```
 
 ```r
 totals <- tapply(data$steps, data$date, sum)
-```
-
-```
-## Error: object of type 'closure' is not subsettable
-```
-
-```r
 head(totals)
 ```
 
 ```
-## Error: object 'totals' not found
+## 2012-10-01 2012-10-02 2012-10-03 2012-10-04 2012-10-05 2012-10-06 
+##         NA        126      11352      12116      13294      15420
 ```
 
 
@@ -76,9 +59,7 @@ To better understand the average number of steps taken per day, a histogram, mea
 hist(totals, xlab = "Daily Step Total", ylab = "Number of Days", main = "Frequency of Daily Step Totals", col = "lightblue", ylim = c(0,30))
 ```
 
-```
-## Error: object 'totals' not found
-```
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
 
 The mean and median are then calculated based on the "totals" variable. 
 
@@ -88,7 +69,7 @@ mean(totals, na.rm=TRUE)
 ```
 
 ```
-## Error: object 'totals' not found
+## [1] 10766
 ```
 
 ```r
@@ -96,7 +77,7 @@ median(totals, na.rm=TRUE)
 ```
 
 ```
-## Error: object 'totals' not found
+## [1] 10765
 ```
 
 The mean for this data set is 10766 and the median is 10765. Looking at the histogram and the similarity between the mean and median, it appears that this data set approximates a normal distribution.
@@ -108,34 +89,18 @@ Next, we need to determine what the average daily activity pattern is and which 
 
 ```r
 meaninterval <- aggregate(data$steps ~ data$interval, FUN = "mean")
-```
-
-```
-## Error: object of type 'closure' is not subsettable
-```
-
-```r
 colnames(meaninterval) <- c("interval","steps")
-```
-
-```
-## Error: object 'meaninterval' not found
-```
-
-```r
 plot(meaninterval, type="l", xlab = "Interval (minutes)", ylab = "Average Number of Steps", main = "Average Daily Activity Pattern")
 ```
 
-```
-## Error: object 'meaninterval' not found
-```
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
 
 ```r
 with(meaninterval,interval[steps==max(steps)])
 ```
 
 ```
-## Error: object 'meaninterval' not found
+## [1] 835
 ```
 
 ```r
@@ -143,7 +108,7 @@ max(meaninterval[,2])
 ```
 
 ```
-## Error: object 'meaninterval' not found
+## [1] 206.2
 ```
 
 Based on the graph and the "max" and "with" functions above, we can see that the user was most active at interval 835, where the average number of steps was 206.2.
@@ -158,7 +123,8 @@ summary(data$steps)
 ```
 
 ```
-## Error: object of type 'closure' is not subsettable
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##     0.0     0.0     0.0    37.4    12.0   806.0    2304
 ```
 
 To see what the impact of the missing (NA) data is, the NA values can be replaced with other values. In this case, the NA values can be replaced with the mean value for that 5-minute interval. For example, the number of steps at interval 0 on 2012-10-01 is missing, but can be populated with the mean of all interval 0 values during the two month period (1.717). This can be done by merging the "data" and "meaninterval" data frames used in the previous steps to append the interval's mean value to the end of the new "mergedata" data frame. Next, using subsetting, the NA values can be selected and replaced by the mean interval values. 
@@ -166,34 +132,32 @@ To see what the impact of the missing (NA) data is, the NA values can be replace
 
 ```r
 mergedata <- merge(data, meaninterval, by.x="interval", by.y="interval")
-```
-
-```
-## Error: cannot coerce class ""function"" to a data.frame
-```
-
-```r
 head(mergedata)
 ```
 
 ```
-## Error: object 'mergedata' not found
+##   interval steps.x       date steps.y
+## 1        0      NA 2012-10-01   1.717
+## 2        0       0 2012-11-23   1.717
+## 3        0       0 2012-10-28   1.717
+## 4        0       0 2012-11-06   1.717
+## 5        0       0 2012-11-24   1.717
+## 6        0       0 2012-11-15   1.717
 ```
 
 ```r
 mergedata$steps.x[is.na(mergedata$steps.x)] <- mergedata$steps.y[is.na(mergedata$steps.x)]
-```
-
-```
-## Error: object 'mergedata' not found
-```
-
-```r
 head(mergedata)
 ```
 
 ```
-## Error: object 'mergedata' not found
+##   interval steps.x       date steps.y
+## 1        0   1.717 2012-10-01   1.717
+## 2        0   0.000 2012-11-23   1.717
+## 3        0   0.000 2012-10-28   1.717
+## 4        0   0.000 2012-11-06   1.717
+## 5        0   0.000 2012-11-24   1.717
+## 6        0   0.000 2012-11-15   1.717
 ```
 
 In the samples above, we observe that interval 0 on 2012-10-01 had no data for steps, but once the NA values were selected and replaced, the "NA" value was replaced by the average for interval 0, which is 1.717.
@@ -203,26 +167,17 @@ With the missing values replaced, the next step is to plot a histogram, calculat
 
 ```r
 mergetotals <- tapply(mergedata$steps.x, mergedata$date, sum)
-```
-
-```
-## Error: object 'mergedata' not found
-```
-
-```r
 hist(mergetotals, xlab = "Daily Step Total", ylab = "Number of Days", main = "Frequency of Daily Step Totals", col = "lightgreen", ylim = c(0,40))
 ```
 
-```
-## Error: object 'mergetotals' not found
-```
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
 
 ```r
 mean(mergetotals)
 ```
 
 ```
-## Error: object 'mergetotals' not found
+## [1] 10766
 ```
 
 ```r
@@ -230,7 +185,7 @@ median(mergetotals)
 ```
 
 ```
-## Error: object 'mergetotals' not found
+## [1] 10766
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -240,66 +195,13 @@ For the final comparison, the data set without missing values will be split into
 
 ```r
 day <- weekdays(mergedata$date)
-```
-
-```
-## Error: object 'mergedata' not found
-```
-
-```r
 wkdata <- cbind(mergedata,day)
-```
-
-```
-## Error: object 'mergedata' not found
-```
-
-```r
 wkdata_det <- ifelse (wkdata$day %in% c("Saturday","Sunday"), "weekend", "weekday")
-```
-
-```
-## Error: object 'wkdata' not found
-```
-
-```r
 wkdata <- cbind(wkdata, wkdata_det)
-```
-
-```
-## Error: object 'wkdata' not found
-```
-
-```r
 weekday <- wkdata[wkdata$wkdata_det=="weekday",]
-```
-
-```
-## Error: object 'wkdata' not found
-```
-
-```r
 weekend <- wkdata[wkdata$wkdata_det=="weekend",]
-```
-
-```
-## Error: object 'wkdata' not found
-```
-
-```r
 weekday_agg <- aggregate(weekday$steps.x ~ weekday$interval, FUN = "mean")
-```
-
-```
-## Error: object 'weekday' not found
-```
-
-```r
 weekend_agg <- aggregate(weekend$steps.x ~ weekend$interval, FUN = "mean")
-```
-
-```
-## Error: object 'weekend' not found
 ```
 
 Finally, the "weekday_agg" and "weekend_agg" can be plotted on a time series panel plot to observe differences in weekday and weekend activity levels. Based on these graphs, it appears that there is typically more activity on weekends than on weekdays.
@@ -308,16 +210,7 @@ Finally, the "weekday_agg" and "weekend_agg" can be plotted on a time series pan
 ```r
 par(mfrow=c(2,1))
 plot(weekday_agg, type="l", xlab = "Interval (minutes)", ylab = "Average Number of Steps", main = "Average Weekday Daily Activity Pattern", ylim = c(0,250))
-```
-
-```
-## Error: object 'weekday_agg' not found
-```
-
-```r
 plot(weekend_agg, type="l", xlab = "Interval (minutes)", ylab = "Average Number of Steps", main = "Average Weekend Daily Activity Pattern", ylim = c(0,250))
 ```
 
-```
-## Error: object 'weekend_agg' not found
-```
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9.png) 

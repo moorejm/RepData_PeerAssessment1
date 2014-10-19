@@ -24,7 +24,7 @@ The first step of this project is to import the data and do preprocessing. This 
 
 
 ```{r}
-data <- read.csv("./activity.csv", colClasses=c(date="Date"))
+data <- read.csv("activity.csv", colClasses=c(date="Date"))
 head(data)
 totals <- tapply(data$steps, data$date, sum)
 head(totals)
